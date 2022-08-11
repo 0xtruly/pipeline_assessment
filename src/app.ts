@@ -71,7 +71,7 @@ const loadData = async (page: number = 1) => {
     for (let i = 0; i < data?.length; i++) {
       const row = data[i];
       let tr = document.createElement('tr');
-      tr?.setAttribute("data-entryId", row.id);
+      tr?.setAttribute("data-entryid", row.id);
       tr.innerHTML = `
       <td id=${row.id}>${row.row}</td>
       <td>${row.gender}</td>
