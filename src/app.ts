@@ -46,12 +46,12 @@ const paginate = () => {
 };
 
 const loadData = async (page: number = 1) => {
-  const response = await axios.get(
+  const response = await fetch(
     `https://randomapi.com/api/8csrgnjw?key=LEIX-GF3O-AG7I-6J84&page=${page}`
   );
 
   if (response.status === 200) {
-    const resData = await response.data;
+    const resData = await response.json();
     const paging: PagingData = resData?.results[0].paging;
     const data: ResultData[] = resData?.results[0][`${currentPage}`];
     if (paging.previous) {
