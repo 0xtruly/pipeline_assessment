@@ -18,8 +18,8 @@ let currentPage: number = 1;
 
 const paginate = () => {
   previousBtn.disabled = true;
-  previousBtn.style.color = 'black';
-  previousBtn.style.backgroundColor = 'gray';
+  previousBtn.style.color = "black";
+  previousBtn.style.backgroundColor = "gray";
   pageView.innerHTML = `Page: ${currentPage}`;
   previousBtn.addEventListener('click', async () => {
     if (currentPage === 1) {
@@ -41,7 +41,7 @@ const paginate = () => {
 
 const loadData = async (page: number = 1) => {
   const response = await fetch(
-    `https://randomapi.com/api/8csrgnjw?key=LEIX-GF3O-AG7I-6J84&page=${page}`,
+    `https://randomapi.com/api/8csrgnjw?key=LEIX-GF3O-AG7I-6J84&page=${page}`
   );
 
   if (response.status === 200) {
@@ -50,7 +50,7 @@ const loadData = async (page: number = 1) => {
     const data: ResultData[] = resData?.results[0][`${currentPage}`];
     if (paging.previous) {
       previousBtn.disabled = false;
-      previousBtn.style.color = '#04AA6D';
+      previousBtn.style.color = "#04AA6D";
     }
 
     // for (const n of data) {
@@ -71,11 +71,11 @@ const loadData = async (page: number = 1) => {
     for (let i = 0; i < data?.length; i++) {
       const row = data[i];
       let tr = document.createElement('tr');
-      tr?.setAttribute('data-entryId', row.id);
+      tr?.setAttribute("data-entryId", row.id);
       tr.innerHTML = `
-                <td id=${row.id}>${row.row}</td>
-                <td>${row.gender}</td>
-                <td>${row.age}</td>`;
+      <td id=${row.id}>${row.row}</td>
+      <td>${row.gender}</td>
+      <td>${row.age}</td>`;
       tableBody.appendChild(tr);
     }
   }
