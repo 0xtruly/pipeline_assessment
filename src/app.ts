@@ -1,3 +1,6 @@
+import axios from 'axios';
+
+
 type ResultData = {
   id: string;
   gender: string;
@@ -10,10 +13,12 @@ type PagingData = {
   previous?: string;
 };
 
-let previousBtn: HTMLElement | any = document.querySelector("button[data-prevbtn]");
-let nextBtn: HTMLElement | any = document.querySelector("button[data-nextbtn]");
-let pageView: HTMLElement | any = document.querySelector("label[data-pageview]");
-let tableBody: HTMLElement | any = document.querySelector("tbody[data-sink]");
+let previousBtn: HTMLElement | any = document.querySelector(
+  "button[data-prevbtn]");
+let nextBtn: HTMLElement | any = document.querySelector(
+  "button[data-nextbtn]");
+let pageView: HTMLElement | any = document.querySelector(
+  "label[data-pageview]");
 let currentPage: number = 1;
 
 const paginate = () => {
@@ -21,31 +26,29 @@ const paginate = () => {
   previousBtn.style.color = "black";
   previousBtn.style.backgroundColor = "gray";
   pageView.innerHTML = `Page: ${currentPage}`;
-  previousBtn.addEventListener('click', async () => {
+  previousBtn.addEventListener("click", async () => {
     if (currentPage === 1) {
       return currentPage;
     } else {
       currentPage--;
     }
     pageView.innerHTML = `Page: ${currentPage}`;
-    tableBody.innerHTML = "";
     await loadData(currentPage);
   });
-  nextBtn.addEventListener('click', async () => {
+  nextBtn.addEventListener("click", async () => {
     currentPage++;
     pageView.innerHTML = `Page: ${currentPage}`;
-    tableBody.innerHTML = '';
     await loadData(currentPage);
   });
 };
 
 const loadData = async (page: number = 1) => {
-  const response = await fetch(
+  const response = await axios.get(
     `https://randomapi.com/api/8csrgnjw?key=LEIX-GF3O-AG7I-6J84&page=${page}`
   );
 
   if (response.status === 200) {
-    const resData = await response.json();
+    const resData = await response.data;
     const paging: PagingData = resData?.results[0].paging;
     const data: ResultData[] = resData?.results[0][`${currentPage}`];
     if (paging.previous) {
@@ -53,30 +56,18 @@ const loadData = async (page: number = 1) => {
       previousBtn.style.color = "#04AA6D";
     }
 
-    // for (const n of data) {
-    //   // console.log('n', n)
-    //   const tR = document.querySelector(`tbody > tr:nth-child(${n.row})`);
-    //   const firstChild = document.querySelector(`tbody > tr:nth-child(${n.row}) > td:first-child`);
-    //   const secondChild = document.querySelector(`tbody > tr:nth-child(${n.row}) > td:nth-child(2)`);
-    //   const thirdChild = document.querySelector(`tbody > tr:nth-child(${n.row}) > td:nth-child(3)`);
-    //   firstChild.innerHTML = n.row;
-    //   secondChild.innerHTML = n.gender;
-    //   thirdChild.innerHTML = n.age;
-    //   console.log('tR', tR)
-    //   console.log('secondChild', secondChild)
-    //   tR?.setAttribute('data-entryId', n.id);
+    for (const n in data) {
+      const index = Number(n) + 1;
+      const item = data[n];
+      const tR = document.querySelector(`tbody > tr:nth-child(${index})`);
+      const firstChild = document.querySelector(`tbody > tr:nth-child(${index}) > td:nth-child(1)`);
+      const secondChild = document.querySelector(`tbody > tr:nth-child(${index}) > td:nth-child(2)`);
+      const thirdChild = document.querySelector(`tbody > tr:nth-child(${index}) > td:nth-child(3)`);
+      firstChild.innerHTML = item.row;
+      secondChild.innerHTML = item.gender;
+      thirdChild.innerHTML = item.age;
+      tR?.setAttribute("data-entryId", item.id);
 
-    // }
-
-    for (let i = 0; i < data?.length; i++) {
-      const row = data[i];
-      let tr = document.createElement('tr');
-      tr?.setAttribute("data-entryid", row.id);
-      tr.innerHTML = `
-      <td id=${row.id}>${row.row}</td>
-      <td>${row.gender}</td>
-      <td>${row.age}</td>`;
-      tableBody.appendChild(tr);
     }
   }
 };
