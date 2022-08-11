@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 
 type ResultData = {
@@ -14,11 +14,14 @@ type PagingData = {
 };
 
 let previousBtn: HTMLElement | any = document.querySelector(
-  "button[data-prevbtn]");
+"button[data-prevbtn]"
+);
 let nextBtn: HTMLElement | any = document.querySelector(
-  "button[data-nextbtn]");
+"button[data-nextbtn]"
+);
 let pageView: HTMLElement | any = document.querySelector(
-  "label[data-pageview]");
+"label[data-pageview]"
+);
 let currentPage: number = 1;
 
 const paginate = () => {
@@ -60,13 +63,19 @@ const loadData = async (page: number = 1) => {
       const index = Number(n) + 1;
       const item = data[n];
       const tR = document.querySelector(`tbody > tr:nth-child(${index})`);
-      const firstChild = document.querySelector(`tbody > tr:nth-child(${index}) > td:nth-child(1)`);
-      const secondChild = document.querySelector(`tbody > tr:nth-child(${index}) > td:nth-child(2)`);
-      const thirdChild = document.querySelector(`tbody > tr:nth-child(${index}) > td:nth-child(3)`);
+      tR?.setAttribute("data-entryid", item.id);
+      const firstChild = document.querySelector(
+        `tbody > tr:nth-child(${index}) > td:nth-child(1)`
+        );
+      const secondChild = document.querySelector(
+        `tbody > tr:nth-child(${index}) > td:nth-child(2)`
+        );
+      const thirdChild = document.querySelector(
+        `tbody > tr:nth-child(${index}) > td:nth-child(3)`
+        );
       firstChild.innerHTML = item.row;
       secondChild.innerHTML = item.gender;
       thirdChild.innerHTML = item.age;
-      tR?.setAttribute("data-entryId", item.id);
 
     }
   }
