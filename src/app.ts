@@ -22,7 +22,9 @@ const paginate = () => {
   previousBtn.style.backgroundColor = 'gray';
   pageView.innerHTML = `Page: ${currentPage}`;
   previousBtn.addEventListener('click', async () => {
-    if (currentPage > 1) {
+    if (currentPage === 1) {
+      return currentPage;
+    } else {
       currentPage--;
     }
     pageView.innerHTML = `Page: ${currentPage}`;
@@ -51,9 +53,25 @@ const loadData = async (page: number = 1) => {
       previousBtn.style.color = '#04AA6D';
     }
 
+    // for (const n of data) {
+    //   // console.log('n', n)
+    //   const tR = document.querySelector(`tbody > tr:nth-child(${n.row})`);
+    //   const firstChild = document.querySelector(`tbody > tr:nth-child(${n.row}) > td:first-child`);
+    //   const secondChild = document.querySelector(`tbody > tr:nth-child(${n.row}) > td:nth-child(2)`);
+    //   const thirdChild = document.querySelector(`tbody > tr:nth-child(${n.row}) > td:nth-child(3)`);
+    //   firstChild.innerHTML = n.row;
+    //   secondChild.innerHTML = n.gender;
+    //   thirdChild.innerHTML = n.age;
+    //   console.log('tR', tR)
+    //   console.log('secondChild', secondChild)
+    //   tR?.setAttribute('data-entryId', n.id);
+
+    // }
+
     for (let i = 0; i < data?.length; i++) {
       const row = data[i];
       let tr = document.createElement('tr');
+      tr?.setAttribute('data-entryId', row.id);
       tr.innerHTML = `
                 <td id=${row.id}>${row.row}</td>
                 <td>${row.gender}</td>
