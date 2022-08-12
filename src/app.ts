@@ -19,6 +19,9 @@ let nextBtn: HTMLElement | any = document.querySelector(
 let pageView: HTMLElement | any = document.querySelector(
   "label[data-pageview]"
 );
+const tableRow: HTMLElement | any = document.querySelectorAll(
+  `tbody[data-sink] > tr`
+);
 let currentPage: number = 1;
 
 const loadData = async (page: number = 1) => {
@@ -38,8 +41,6 @@ const loadData = async (page: number = 1) => {
       previousBtn.disabled = true;
     }
 
-    const tableRow = document.querySelectorAll(`tbody[data-sink] > tr`);
-    console.log('tableRow', tableRow[0].children)
     for (const n in data) {
       const index = Number(n);
       const item = data[n];
