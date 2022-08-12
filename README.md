@@ -1,3 +1,4 @@
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/6f8dc6f12c204c83bad159ce87371c7a)](https://www.codacy.com/gh/dekunleroy/pipeline_assessment/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=dekunleroy/pipeline_assessment&amp;utm_campaign=Badge_Grade)
 # Frontend Assessment
 
 Build and deploy a very simple frontend app for paginated data, that does the following
