@@ -35,12 +35,9 @@ let pageView: HTMLElement | any = document.querySelector(
 const tableBody: HTMLElement | any = document.querySelector(
   `[data-sink]`
 );
-const tableRow: HTMLElement | any = document.querySelectorAll(
-  `tbody[data-sink] > tr`
-);
 let currentPage: number = 1;
 
-const loadData = async (page: number = 1) => {
+const loadData = async (page: number) => {
   const response = await fetch(
     `https://randomapi.com/api/8csrgnjw?key=LEIX-GF3O-AG7I-6J84&page=${page}`
   );
@@ -48,28 +45,6 @@ const loadData = async (page: number = 1) => {
   if (response.status !== 200) {
     const errorMessage = `An error occurred!! ${response.status}`;
     alert(errorMessage);
-    // const paging: PagingData = resData?.results[0].paging;
-    // dataStore = resData?.results[0][`${currentPage}`];
-    // const data: ResultData[] = resData?.results[0][`${currentPage}`];
-    // const pageNo = resData?.info.page;
-    // pageView.textContent = `Page: ${pageNo}`;
-    // if (paging.previous) {
-    //   previousBtn.disabled = false;
-    // } else {
-    //   previousBtn.disabled = true;
-    // }
-
-    // for (const n in data) {
-    //   const index = Number(n);
-    //   const item = data[n];
-    //   tableRow[index].setAttribute("data-entryid", item.id);
-    //   const firstChild: HTMLElement | any = tableRow[index].children[0];
-    //   const secondChild: HTMLElement | any = tableRow[index].children[1];
-    //   const thirdChild: HTMLElement | any = tableRow[index].children[2];
-    //   firstChild.textContent = item.row;
-    //   secondChild.textContent = item.gender;
-    //   thirdChild.textContent = item.age;
-    // }
   }
   const resData = await response.json();
   return resData;
@@ -77,23 +52,6 @@ const loadData = async (page: number = 1) => {
 
 const renderTableData = () => {
   let newNode;
-  // console.log('dataStore', dataStore)
-  // console.log('tableData', tableData)
-  // if (tableData.length > 0) {
-  //   for (const n in tableData) {
-  //     const index = Number(n);
-  //     const item = tableData[n];
-  //     const { id, row, gender, age } = item;
-  //     tableRow[index].setAttribute("data-entryid", id);
-  //     const firstChild: HTMLElement | any = tableRow[index].children[0];
-  //     const secondChild: HTMLElement | any = tableRow[index].children[1];
-  //     const thirdChild: HTMLElement | any = tableRow[index].children[2];
-  //     firstChild.textContent = row;
-  //     secondChild.textContent = gender;
-  //     thirdChild.textContent = age;
-  //   }
-  // }
-
   if (paging.previous) {
     previousBtn.disabled = false;
   } else {
@@ -117,16 +75,15 @@ const renderTableData = () => {
 }
 
 async function getData(type: "NEXT" | "PREVIOUS") {
-  if (type === "PREVIOUS") {
+  if (type === "PREVIOUS" && paging.previous) {
     loadData(currentPage).then(data => {
       paging = data?.results[0].paging;
       dataStore = data;
       tableData = data?.results[0][`${currentPage}`];
       renderTableData()
     })
-
   }
-  //return the data from cache
+
   if (type === "NEXT") {
     if (Number(dataStore?.info.page) === currentPage) {
       tableData = dataStore?.results[0][`${currentPage}`];
@@ -134,25 +91,18 @@ async function getData(type: "NEXT" | "PREVIOUS") {
     }
     else {
       loadData(currentPage).then(data => {
-        //the api result returns the page number and page number + 1 as keys, we would like to cache it so that we dont make such round trip again
-        // let result = Object.values(data?.results[0])
         let result = Object.entries(data?.results[0])
         paging = data?.results[0].paging;
         dataStore = data;
         tableData = data?.results[0][`${currentPage}`];
         renderTableData()
-        // type === "NEXT" && currentPage++
       });
     }
   }
 }
 
 previousBtn.addEventListener("click", async () => {
-  if (currentPage === 1) {
-    return currentPage;
-  } else {
-    currentPage--;
-  }
+  currentPage--;
   await getData("PREVIOUS");
 });
 nextBtn.addEventListener("click", async () => {
