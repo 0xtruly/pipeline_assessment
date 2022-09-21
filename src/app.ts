@@ -35,6 +35,9 @@ let pageView: HTMLElement | any = document.querySelector(
 const tableBody: HTMLElement | any = document.querySelector(
   `[data-sink]`
 );
+const tableRow: HTMLElement | any = document.querySelectorAll(
+  `tbody[data-sink] > tr`
+);
 let currentPage: number = 1;
 
 const loadData = async (page: number) => {
@@ -58,19 +61,30 @@ const renderTableData = () => {
     previousBtn.disabled = true;
   }
 
-  newNode = tableData && tableData.map((item: ResultData) => {
-    const { id, row, gender, age } = item;
-    return `
-    <tr data-entryid="${id}">
-    <td>${row}</td>
-    <td>${age}</td>
-    <td>${gender}</td>
-    </tr>
-    `
-  });
+  // newNode = tableData && tableData.map((item: ResultData) => {
+  //   const { id, row, gender, age } = item;
+  //   return `
+  //   <tr data-entryid="${id}">
+  //   <td>${row}</td>
+  //   <td>${age}</td>
+  //   <td>${gender}</td>
+  //   </tr>
+  //   `
+  // });
   if (pageView && tableBody) {
+    for (const n in tableData) {
+      const index = Number(n);
+      const item = tableData[n];
+      tableRow[index].setAttribute("data-entryid", item.id);
+      const firstChild: HTMLElement | any = tableRow[index].children[0];
+      const secondChild: HTMLElement | any = tableRow[index].children[1];
+      const thirdChild: HTMLElement | any = tableRow[index].children[2];
+      firstChild.textContent = item.row;
+      secondChild.textContent = item.gender;
+      thirdChild.textContent = item.age;
+    }
     pageView.textContent = `Showing Page ${currentPage}`;
-    tableBody.innerHTML = newNode.join("").toString()
+    // tableBody.innerHTML = newNode.join("").toString()
   }
 }
 
