@@ -35,6 +35,9 @@ let pageView: HTMLElement | any = document.querySelector(
 const tableBody: HTMLElement | any = document.querySelector(
   `[data-sink]`
 );
+const tableRow: HTMLElement | any = document.querySelectorAll(
+  `tbody[data-sink] > tr`
+);
 let currentPage: number = 1;
 
 const loadData = async (page: number) => {
