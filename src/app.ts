@@ -77,8 +77,8 @@ const loadData = async (page: number = 1) => {
 
 const renderTableData = () => {
   let newNode;
-  console.log('dataStore', dataStore)
-  console.log('tableData', tableData)
+  // console.log('dataStore', dataStore)
+  // console.log('tableData', tableData)
   // if (tableData.length > 0) {
   //   for (const n in tableData) {
   //     const index = Number(n);
@@ -110,12 +110,14 @@ const renderTableData = () => {
     </tr>
     `
   });
-  console.log('newNode', newNode.join("").toString());
-  tableBody.innerHTML = newNode.join("").toString()
+  if (pageView && tableBody) {
+    pageView.textContent = `Page: ${currentPage}`;
+    tableBody.innerHTML = newNode.join("").toString()
+  }
 }
 
 async function getData(type: "NEXT" | "PREVIOUS") {
-  if (type === "PREVIOUS" && currentPage !== 1) {
+  if (type === "PREVIOUS") {
     loadData(currentPage).then(data => {
       paging = data?.results[0].paging;
       dataStore = data;
