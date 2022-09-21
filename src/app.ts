@@ -19,11 +19,6 @@ type PagingData = {
   previous?: string;
 };
 
-enum PageEnum {
-  next = "NEXT",
-  previous = "PREVIOUS"
-}
-
 let dataStore: ResponseData;
 let tableData: ResultData[] = [];
 let paging: PagingData = {}
@@ -40,10 +35,12 @@ let pageView: HTMLElement | any = document.querySelector(
 const tableBody: HTMLElement | any = document.querySelector(
   `[data-sink]`
 );
-
+const tableRow: HTMLElement | any = document.querySelectorAll(
+  `tbody[data-sink] > tr`
+);
 let currentPage: number = 1;
 
-const initiateRequest = async (page: number = 1) => {
+const loadData = async (page: number = 1) => {
   const response = await fetch(
     `https://randomapi.com/api/8csrgnjw?key=LEIX-GF3O-AG7I-6J84&page=${page}`
   );
@@ -51,6 +48,28 @@ const initiateRequest = async (page: number = 1) => {
   if (response.status !== 200) {
     const errorMessage = `An error occurred!! ${response.status}`;
     alert(errorMessage);
+    // const paging: PagingData = resData?.results[0].paging;
+    // dataStore = resData?.results[0][`${currentPage}`];
+    // const data: ResultData[] = resData?.results[0][`${currentPage}`];
+    // const pageNo = resData?.info.page;
+    // pageView.textContent = `Page: ${pageNo}`;
+    // if (paging.previous) {
+    //   previousBtn.disabled = false;
+    // } else {
+    //   previousBtn.disabled = true;
+    // }
+
+    // for (const n in data) {
+    //   const index = Number(n);
+    //   const item = data[n];
+    //   tableRow[index].setAttribute("data-entryid", item.id);
+    //   const firstChild: HTMLElement | any = tableRow[index].children[0];
+    //   const secondChild: HTMLElement | any = tableRow[index].children[1];
+    //   const thirdChild: HTMLElement | any = tableRow[index].children[2];
+    //   firstChild.textContent = item.row;
+    //   secondChild.textContent = item.gender;
+    //   thirdChild.textContent = item.age;
+    // }
   }
   const resData = await response.json();
   return resData;
@@ -58,6 +77,23 @@ const initiateRequest = async (page: number = 1) => {
 
 const renderTableData = () => {
   let newNode;
+  // console.log('dataStore', dataStore)
+  // console.log('tableData', tableData)
+  // if (tableData.length > 0) {
+  //   for (const n in tableData) {
+  //     const index = Number(n);
+  //     const item = tableData[n];
+  //     const { id, row, gender, age } = item;
+  //     tableRow[index].setAttribute("data-entryid", id);
+  //     const firstChild: HTMLElement | any = tableRow[index].children[0];
+  //     const secondChild: HTMLElement | any = tableRow[index].children[1];
+  //     const thirdChild: HTMLElement | any = tableRow[index].children[2];
+  //     firstChild.textContent = row;
+  //     secondChild.textContent = gender;
+  //     thirdChild.textContent = age;
+  //   }
+  // }
+
   if (paging.previous) {
     previousBtn.disabled = false;
   } else {
@@ -117,14 +153,14 @@ previousBtn.addEventListener("click", async () => {
   } else {
     currentPage--;
   }
-  await getData(PageEnum.previous);
+  await getData("PREVIOUS");
 });
 nextBtn.addEventListener("click", async () => {
   currentPage++;
-  await getData(PageEnum.next);
+  await getData("NEXT");
 });
 
-getData(PageEnum.next);
+getData("NEXT");
 const startApp = async () => {
 };
 
