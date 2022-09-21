@@ -111,7 +111,7 @@ const renderTableData = () => {
     `
   });
   if (pageView && tableBody) {
-    pageView.textContent = `Page: ${currentPage}`;
+    pageView.textContent = `Showing Page: ${currentPage}`;
     tableBody.innerHTML = newNode.join("").toString()
   }
 }
