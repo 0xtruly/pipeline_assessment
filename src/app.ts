@@ -19,6 +19,11 @@ type PagingData = {
   previous?: string;
 };
 
+enum PageEnum {
+  next = "NEXT",
+  previous = "PREVIOUS"
+}
+
 let dataStore: ResponseData;
 let tableData: ResultData[] = [];
 let paging: PagingData = {}
@@ -75,7 +80,17 @@ const renderTableData = () => {
   }
 }
 
-const getData = (type: "NEXT" | "PREVIOUS") => {
+const getData = (type: PageEnum) => {
+
+  if (type === "PREVIOUS") {
+    initiateRequest(currentPage).then(data => {
+      paging = data?.results[0].paging;
+      dataStore = data;
+      tableData = data?.results[0][`${currentPage}`];
+      tableData && renderTableData()
+    })
+
+  }
   if (type === "NEXT") {
     if (Number(dataStore?.info.page) === currentPage) {
       tableData = dataStore?.results[0][`${currentPage}`];
@@ -90,16 +105,6 @@ const getData = (type: "NEXT" | "PREVIOUS") => {
       });
     }
   }
-
-  if (type === "PREVIOUS") {
-    initiateRequest(currentPage).then(data => {
-      paging = data?.results[0].paging;
-      dataStore = data;
-      tableData = data?.results[0][`${currentPage}`];
-      tableData && renderTableData()
-    })
-
-  }
 }
 
 previousBtn.addEventListener("click", async () => {
@@ -108,11 +113,11 @@ previousBtn.addEventListener("click", async () => {
   } else {
     currentPage--;
   }
-  getData("PREVIOUS");
+  getData(PageEnum.previous);
 });
 nextBtn.addEventListener("click", async () => {
   currentPage++;
-  getData("NEXT");
+  getData(PageEnum.next);
 });
 
 getData("NEXT");
