@@ -35,9 +35,6 @@ let pageView: HTMLElement | any = document.querySelector(
 const tableBody: HTMLElement | any = document.querySelector(
   `[data-sink]`
 );
-const tableRow: HTMLElement | any = document.querySelectorAll(
-  `tbody[data-sink] > tr`
-);
 let currentPage: number = 1;
 
 const loadData = async (page: number) => {
@@ -60,17 +57,6 @@ const renderTableData = () => {
   } else {
     previousBtn.disabled = true;
   }
-
-  // newNode = tableData && tableData.map((item: ResultData) => {
-  //   const { id, row, gender, age } = item;
-  //   return `
-  //   <tr data-entryid="${id}">
-  //   <td>${row}</td>
-  //   <td>${age}</td>
-  //   <td>${gender}</td>
-  //   </tr>
-  //   `
-  // });
   if (pageView && tableBody) {
     for (const n in tableData) {
       const index = Number(n);
@@ -84,7 +70,6 @@ const renderTableData = () => {
       thirdChild.textContent = item.age;
     }
     pageView.textContent = `Showing Page ${currentPage}`;
-    // tableBody.innerHTML = newNode.join("").toString()
   }
 }
 
@@ -100,12 +85,11 @@ async function getData(type: "NEXT" | "PREVIOUS") {
 
   if (type === "NEXT") {
     if (Number(dataStore?.info.page) === currentPage) {
-      tableData = dataStore?.results[0][`${currentPage}`];
+      tableData = dataStore?.results[1][`${currentPage}`];
       renderTableData()
     }
     else {
       loadData(currentPage).then(data => {
-        let result = Object.entries(data?.results[0])
         paging = data?.results[0].paging;
         dataStore = data;
         tableData = data?.results[0][`${currentPage}`];
