@@ -87,21 +87,21 @@ const getData = (type: PageEnum) => {
       paging = data?.results[0].paging;
       dataStore = data;
       tableData = data?.results[0][`${currentPage}`];
-      tableData && renderTableData()
+      renderTableData()
     })
 
   }
   if (type === "NEXT") {
     if (Number(dataStore?.info.page) === currentPage) {
       tableData = dataStore?.results[0][`${currentPage}`];
-      tableData && renderTableData()
+      renderTableData()
     }
     else {
       initiateRequest(currentPage).then(data => {
         paging = data?.results[0].paging;
         dataStore = data;
         tableData = data?.results[0][`${currentPage}`];
-        tableData && renderTableData()
+        renderTableData()
       });
     }
   }
