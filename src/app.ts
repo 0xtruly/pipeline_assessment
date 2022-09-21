@@ -80,28 +80,32 @@ const renderTableData = () => {
   }
 }
 
-async function getData(type: PageEnum) {
-
+async function getData(type: "NEXT" | "PREVIOUS") {
   if (type === "PREVIOUS") {
-    initiateRequest(currentPage).then(data => {
+    loadData(currentPage).then(data => {
       paging = data?.results[0].paging;
       dataStore = data;
       tableData = data?.results[0][`${currentPage}`];
       renderTableData()
     })
-  }
 
+  }
+  //return the data from cache
   if (type === "NEXT") {
     if (Number(dataStore?.info.page) === currentPage) {
       tableData = dataStore?.results[0][`${currentPage}`];
       renderTableData()
     }
     else {
-      initiateRequest(currentPage).then(data => {
+      loadData(currentPage).then(data => {
+        //the api result returns the page number and page number + 1 as keys, we would like to cache it so that we dont make such round trip again
+        // let result = Object.values(data?.results[0])
+        let result = Object.entries(data?.results[0])
         paging = data?.results[0].paging;
         dataStore = data;
         tableData = data?.results[0][`${currentPage}`];
         renderTableData()
+        // type === "NEXT" && currentPage++
       });
     }
   }
