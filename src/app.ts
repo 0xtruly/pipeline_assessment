@@ -80,7 +80,7 @@ const renderTableData = () => {
   }
 }
 
-const getData = (type: PageEnum) => {
+const getData = async (type: PageEnum) => {
 
   if (type === "PREVIOUS") {
     initiateRequest(currentPage).then(data => {
@@ -113,14 +113,14 @@ previousBtn.addEventListener("click", async () => {
   } else {
     currentPage--;
   }
-  getData(PageEnum.previous);
+  await getData(PageEnum.previous);
 });
 nextBtn.addEventListener("click", async () => {
   currentPage++;
-  getData(PageEnum.next);
+  await getData(PageEnum.next);
 });
 
-getData("NEXT");
+getData(PageEnum.next);
 const startApp = async () => {
 };
 
