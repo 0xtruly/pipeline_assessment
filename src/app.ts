@@ -80,7 +80,7 @@ const renderTableData = () => {
   }
 }
 
-const getData = async (type: PageEnum) => {
+async function getData(type: PageEnum) {
 
   if (type === "PREVIOUS") {
     initiateRequest(currentPage).then(data => {
@@ -89,8 +89,8 @@ const getData = async (type: PageEnum) => {
       tableData = data?.results[0][`${currentPage}`];
       renderTableData()
     })
-
   }
+
   if (type === "NEXT") {
     if (Number(dataStore?.info.page) === currentPage) {
       tableData = dataStore?.results[0][`${currentPage}`];
