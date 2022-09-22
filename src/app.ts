@@ -80,7 +80,7 @@ const renderTableData = () => {
 async function getData(type: "NEXT" | "PREVIOUS") {
   const url = dataStore?.results[0]?.paging?.next ?? `${baseUrl}&page=${currentPage}`
   if (type === "PREVIOUS") {
-    if (Number(dataStore?.info.page) === currentPage) {
+    if (Number(dataStore?.info.page) === 1) {
       tableData = dataStore?.results[0][`${currentPage}`];
       renderTableData()
     }
