@@ -55,11 +55,6 @@ const loadData = async (url: string) => {
 };
 
 const renderTableData = () => {
-  if (paging.previous || currentPage !== 1) {
-    previousBtn.disabled = false;
-  } else {
-    previousBtn.disabled = true;
-  }
   if (pageView && tableBody) {
     for (const n in tableData) {
       const index = Number(n);
@@ -73,6 +68,11 @@ const renderTableData = () => {
       thirdChild.textContent = item.age;
     }
     pageView.textContent = `Showing Page ${currentPage}`;
+  }
+  if (currentPage !== 1) {
+    previousBtn.disabled = false;
+  } else {
+    previousBtn.disabled = true;
   }
 }
 
