@@ -68,11 +68,12 @@ const renderTableData = () => {
       thirdChild.textContent = item.age;
     }
     pageView.textContent = `Showing Page ${currentPage}`;
-  }
-  if (currentPage !== 1) {
-    previousBtn.disabled = false;
-  } else {
-    previousBtn.disabled = true;
+
+    if (currentPage === 1) {
+      previousBtn.disabled = true;
+    } else {
+      previousBtn.disabled = false;
+    }
   }
 }
 
