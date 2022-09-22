@@ -78,7 +78,7 @@ const renderTableData = () => {
 
 async function getData(type: "NEXT" | "PREVIOUS") {
   // console.log('currentPage', currentPage)
-  const url = `${baseUrl}&page=${currentPage}`
+  const url = dataStore?.results[0]?.paging?.next ?? `${baseUrl}&page=${currentPage}`
   if (type === "PREVIOUS") {
     // if (!!paging.previous) {
     //   loadData(url).then(data => {
@@ -97,7 +97,7 @@ async function getData(type: "NEXT" | "PREVIOUS") {
       renderTableData()
     }
     else {
-      loadData(url).then(data => {
+      loadData(dataStore?.results[0]?.paging?.previous).then(data => {
         paging = data?.results[0].paging;
         dataStore = data;
         tableData = data?.results[0][`${currentPage}`];
