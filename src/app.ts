@@ -55,7 +55,7 @@ const loadData = async (url: string) => {
 };
 
 const renderTableData = () => {
-  if (paging.previous) {
+  if (paging.previous || currentPage !== 1) {
     previousBtn.disabled = false;
   } else {
     previousBtn.disabled = true;
@@ -77,15 +77,33 @@ const renderTableData = () => {
 }
 
 async function getData(type: "NEXT" | "PREVIOUS") {
+  // console.log('currentPage', currentPage)
   const url = `${baseUrl}&page=${currentPage}`
-  if (type === "PREVIOUS" && paging.previous) {
-    console.log('previous')
-    loadData(url).then(data => {
-      paging = data?.results[0].paging;
-      dataStore = data;
+  if (type === "PREVIOUS") {
+    // if (!!paging.previous) {
+    //   loadData(url).then(data => {
+    //     paging = data?.results[0].paging;
+    //     dataStore = data;
+    //     tableData = dataStore?.results[0][`${currentPage}`];
+    //     renderTableData()
+    //   })
+    // } else {
+    //   console.log('else pageView')
+    //   tableData = dataStore?.results[0][`${currentPage}`];
+    //   renderTableData()
+    // }
+    if (Number(dataStore?.info.page) === currentPage) {
       tableData = dataStore?.results[0][`${currentPage}`];
       renderTableData()
-    })
+    }
+    else {
+      loadData(url).then(data => {
+        paging = data?.results[0].paging;
+        dataStore = data;
+        tableData = data?.results[0][`${currentPage}`];
+        renderTableData()
+      });
+    }
   }
 
   if (type === "NEXT") {
