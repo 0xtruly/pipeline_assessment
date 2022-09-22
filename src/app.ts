@@ -77,21 +77,8 @@ const renderTableData = () => {
 }
 
 async function getData(type: "NEXT" | "PREVIOUS") {
-  // console.log('currentPage', currentPage)
   const url = dataStore?.results[0]?.paging?.next ?? `${baseUrl}&page=${currentPage}`
   if (type === "PREVIOUS") {
-    // if (!!paging.previous) {
-    //   loadData(url).then(data => {
-    //     paging = data?.results[0].paging;
-    //     dataStore = data;
-    //     tableData = dataStore?.results[0][`${currentPage}`];
-    //     renderTableData()
-    //   })
-    // } else {
-    //   console.log('else pageView')
-    //   tableData = dataStore?.results[0][`${currentPage}`];
-    //   renderTableData()
-    // }
     if (Number(dataStore?.info.page) === currentPage) {
       tableData = dataStore?.results[0][`${currentPage}`];
       renderTableData()
