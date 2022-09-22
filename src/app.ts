@@ -39,10 +39,11 @@ const tableRow: HTMLElement | any = document.querySelectorAll(
   `tbody[data-sink] > tr`
 );
 let currentPage: number = 1;
+let baseUrl: string = 'https://randomapi.com/api/8csrgnjw?key=LEIX-GF3O-AG7I-6J84'
 
-const loadData = async (page: number) => {
+const loadData = async (url: string) => {
   const response = await fetch(
-    `https://randomapi.com/api/8csrgnjw?key=LEIX-GF3O-AG7I-6J84&page=${page}`
+    url
   );
 
   if (response.status !== 200) {
@@ -54,7 +55,6 @@ const loadData = async (page: number) => {
 };
 
 const renderTableData = () => {
-  let newNode;
   if (paging.previous) {
     previousBtn.disabled = false;
   } else {
@@ -77,22 +77,24 @@ const renderTableData = () => {
 }
 
 async function getData(type: "NEXT" | "PREVIOUS") {
+  const url = `${baseUrl}&page=${currentPage}`
   if (type === "PREVIOUS" && paging.previous) {
-    loadData(currentPage).then(data => {
+    console.log('previous')
+    loadData(url).then(data => {
       paging = data?.results[0].paging;
       dataStore = data;
-      tableData = data?.results[0][`${currentPage}`];
+      tableData = dataStore?.results[0][`${currentPage}`];
       renderTableData()
     })
   }
 
   if (type === "NEXT") {
-    if (Number(dataStore?.info.page) === currentPage) {
-      tableData = dataStore?.results[1][`${currentPage}`];
+    if (Number(dataStore?.info.page) + 1 === currentPage) {
+      tableData = dataStore?.results[0][`${currentPage}`];
       renderTableData()
     }
     else {
-      loadData(currentPage).then(data => {
+      loadData(url).then(data => {
         paging = data?.results[0].paging;
         dataStore = data;
         tableData = data?.results[0][`${currentPage}`];
@@ -104,11 +106,11 @@ async function getData(type: "NEXT" | "PREVIOUS") {
 
 previousBtn.addEventListener("click", async () => {
   currentPage--;
-  await getData("PREVIOUS");
+  getData("PREVIOUS");
 });
 nextBtn.addEventListener("click", async () => {
   currentPage++;
-  await getData("NEXT");
+  getData("NEXT");
 });
 
 getData("NEXT");
