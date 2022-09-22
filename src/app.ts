@@ -42,9 +42,7 @@ let currentPage: number = 1;
 let baseUrl: string = 'https://randomapi.com/api/8csrgnjw?key=LEIX-GF3O-AG7I-6J84'
 
 const loadData = async (url: string) => {
-  const response = await fetch(
-    url
-  );
+  const response = await fetch(url);
 
   if (response.status !== 200) {
     const errorMessage = `An error occurred!! ${response.status}`;
