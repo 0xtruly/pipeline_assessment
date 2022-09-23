@@ -19,11 +19,6 @@ type PagingData = {
   previous?: string;
 };
 
-enum PagingEnum {
-  next = "NEXT",
-  previous = "PREVIOUS",
-}
-
 let dataStore: ResponseData;
 let tableData: ResultData[] = [];
 
@@ -43,7 +38,8 @@ const tableRow: HTMLElement | any = document.querySelectorAll(
   `tbody[data-sink] > tr`
 );
 let currentPage: number = 1;
-let baseUrl: string = 'https://randomapi.com/api/8csrgnjw?key=LEIX-GF3O-AG7I-6J84'
+let baseUrl: string = 
+'https://randomapi.com/api/8csrgnjw?key=LEIX-GF3O-AG7I-6J84';
 
 const loadData = async (url: string) => {
   const response = await fetch(url);
@@ -77,10 +73,11 @@ const renderTableData = () => {
       previousBtn.disabled = false;
     }
   }
-}
+};
 
-async function getData(type: PagingEnum) {
-  const url = dataStore?.results[0]?.paging?.next ?? `${baseUrl}&page=${currentPage}`
+async function getData(type: "NEXT" | "PREVIOUS") {
+  const url = 
+  dataStore?.results[0]?.paging?.next ?? `${baseUrl}&page=${currentPage}`;
   if (type === "PREVIOUS") {
     if (Number(dataStore?.info.page) === 1) {
       tableData = dataStore?.results[0][`${currentPage}`];
@@ -98,7 +95,7 @@ async function getData(type: PagingEnum) {
   if (type === "NEXT") {
     if (Number(dataStore?.info.page) + 1 === currentPage) {
       tableData = dataStore?.results[0][`${currentPage}`];
-      renderTableData()
+      renderTableData();
     }
     else {
       loadData(url).then((data) => {
@@ -108,18 +105,18 @@ async function getData(type: PagingEnum) {
       });
     }
   }
-}
+};
 
 previousBtn.addEventListener("click", async () => {
   currentPage--;
-  getData(PagingEnum.previous);
+  getData("PREVIOUS");
 });
 nextBtn.addEventListener("click", async () => {
   currentPage++;
-  getData(PagingEnum.next);
+  getData("NEXT");
 });
 
-getData(PagingEnum.next);
+getData("NEXT");
 const startApp = async() => {
 };
 
