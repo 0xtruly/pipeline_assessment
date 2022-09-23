@@ -5,7 +5,7 @@ interface ResponseData {
   }[];
   info: {
     page: string;
-  }
+  };
 }
 type ResultData = {
   id: string;
@@ -19,9 +19,13 @@ type PagingData = {
   previous?: string;
 };
 
+enum PagingEnum {
+  next = "NEXT",
+  previous = "PREVIOUS",
+}
+
 let dataStore: ResponseData;
 let tableData: ResultData[] = [];
-let paging: PagingData = {}
 
 let previousBtn: HTMLButtonElement | any = document.querySelector(
   "button[data-prevbtn]"
@@ -75,19 +79,18 @@ const renderTableData = () => {
   }
 }
 
-async function getData(type: "NEXT" | "PREVIOUS") {
+async function getData(type: PagingEnum) {
   const url = dataStore?.results[0]?.paging?.next ?? `${baseUrl}&page=${currentPage}`
   if (type === "PREVIOUS") {
     if (Number(dataStore?.info.page) === 1) {
       tableData = dataStore?.results[0][`${currentPage}`];
-      renderTableData()
+      renderTableData();
     }
     else {
-      loadData(dataStore?.results[0]?.paging?.previous).then(data => {
-        paging = data?.results[0].paging;
+      loadData(dataStore?.results[0]?.paging?.previous).then((data) => {
         dataStore = data;
         tableData = data?.results[0][`${currentPage}`];
-        renderTableData()
+        renderTableData();
       });
     }
   }
@@ -98,11 +101,10 @@ async function getData(type: "NEXT" | "PREVIOUS") {
       renderTableData()
     }
     else {
-      loadData(url).then(data => {
-        paging = data?.results[0].paging;
+      loadData(url).then((data) => {
         dataStore = data;
         tableData = data?.results[0][`${currentPage}`];
-        renderTableData()
+        renderTableData();
       });
     }
   }
@@ -110,15 +112,15 @@ async function getData(type: "NEXT" | "PREVIOUS") {
 
 previousBtn.addEventListener("click", async () => {
   currentPage--;
-  getData("PREVIOUS");
+  getData(PagingEnum.previous);
 });
 nextBtn.addEventListener("click", async () => {
   currentPage++;
-  getData("NEXT");
+  getData(PagingEnum.next);
 });
 
-getData("NEXT");
-const startApp = async () => {
+getData(PagingEnum.next);
+const startApp = async() => {
 };
 
 document.addEventListener("DOMContentLoaded", startApp);
