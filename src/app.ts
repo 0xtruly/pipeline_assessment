@@ -38,8 +38,7 @@ const tableRow: HTMLElement | any = document.querySelectorAll(
   `tbody[data-sink] > tr`
 );
 let currentPage: number = 1;
-let baseUrl: string = 
-'https://randomapi.com/api/8csrgnjw?key=LEIX-GF3O-AG7I-6J84';
+let baseUrl: string = "https://randomapi.com/api/8csrgnjw?key=LEIX-GF3O-AG7I-6J84";
 
 const loadData = async (url: string) => {
   const response = await fetch(url);
@@ -77,7 +76,7 @@ const renderTableData = () => {
 
 async function getData(type: "NEXT" | "PREVIOUS") {
   const url = 
-  dataStore?.results[0]?.paging?.next ?? `${baseUrl}&page=${currentPage}`;
+    dataStore?.results[0]?.paging?.next ?? `${baseUrl}&page=${currentPage}`;
   if (type === "PREVIOUS") {
     if (Number(dataStore?.info.page) === 1) {
       tableData = dataStore?.results[0][`${currentPage}`];
@@ -89,7 +88,7 @@ async function getData(type: "NEXT" | "PREVIOUS") {
         tableData = data?.results[0][`${currentPage}`];
         renderTableData();
       });
-    }
+    };
   }
 
   if (type === "NEXT") {
@@ -105,7 +104,7 @@ async function getData(type: "NEXT" | "PREVIOUS") {
       });
     }
   }
-};
+}
 
 previousBtn.addEventListener("click", async () => {
   currentPage--;
@@ -117,7 +116,7 @@ nextBtn.addEventListener("click", async () => {
 });
 
 getData("NEXT");
-const startApp = async() => {
-};
-
-document.addEventListener("DOMContentLoaded", startApp);
+const startApp = async() => {};
+document.addEventListener(
+  "DOMContentLoaded", startApp
+);
