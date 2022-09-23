@@ -1,3 +1,12 @@
+interface ResponseData {
+  results: {
+    [key: number]: ResultData[];
+    paging?: PagingData;
+  }[];
+  info: {
+    page: string;
+  };
+}
 type ResultData = {
   id: string;
   gender: string;
@@ -10,10 +19,13 @@ type PagingData = {
   previous?: string;
 };
 
-let previousBtn: HTMLElement | any = document.querySelector(
+let dataStore: ResponseData;
+let tableData: ResultData[] = [];
+
+let previousBtn: HTMLButtonElement | any = document.querySelector(
   "button[data-prevbtn]"
 );
-let nextBtn: HTMLElement | any = document.querySelector(
+let nextBtn: HTMLButtonElement | any = document.querySelector(
   "button[data-nextbtn]"
 );
 let pageView: HTMLElement | any = document.querySelector(
@@ -26,66 +38,85 @@ const tableRow: HTMLElement | any = document.querySelectorAll(
   `tbody[data-sink] > tr`
 );
 let currentPage: number = 1;
+let baseUrl: string = "https://randomapi.com/api/8csrgnjw?key=LEIX-GF3O-AG7I-6J84";
 
-const loadData = async (page: number = 1) => {
-  let newNode;
-  const response = await fetch(
-    `https://randomapi.com/api/8csrgnjw?key=LEIX-GF3O-AG7I-6J84&page=${page}`
-  );
+const loadData = async (url: string) => {
+  const response = await fetch(url);
 
-  if (response.status === 200) {
-    const resData = await response.json();
-    const paging: PagingData = resData?.results[0].paging;
-    const data: ResultData[] = resData?.results[0][`${currentPage}`];
-    const pageNo = resData?.info.page;
-    if (paging.previous) {
-      previousBtn.disabled = false;
-    } else {
-      previousBtn.disabled = true;
+  if (response.status !== 200) {
+    const errorMessage = `An error occurred!! ${response.status}`;
+    alert(errorMessage);
+  }
+  const resData = await response.json();
+  return resData;
+};
+
+const renderTableData = () => {
+  if (pageView && tableBody) {
+    for (const n in tableData) {
+      const index = Number(n);
+      const item = tableData[n];
+      tableRow[index].setAttribute("data-entryid", item.id);
+      const firstChild: HTMLElement | any = tableRow[index].children[0];
+      const secondChild: HTMLElement | any = tableRow[index].children[1];
+      const thirdChild: HTMLElement | any = tableRow[index].children[2];
+      firstChild.textContent = item.row;
+      secondChild.textContent = item.gender;
+      thirdChild.textContent = item.age;
     }
+    pageView.textContent = `Showing Page ${currentPage}`;
 
-    // for (const n in data) {
-    //   const index = Number(n);
-    //   const item = data[n];
-    //   tableRow[index].setAttribute("data-entryid", item.id);
-    //   const firstChild: HTMLElement | any = tableRow[index].children[0];
-    //   const secondChild: HTMLElement | any = tableRow[index].children[1];
-    //   const thirdChild: HTMLElement | any = tableRow[index].children[2];
-    //   firstChild.textContent = item.row;
-    //   secondChild.textContent = item.gender;
-    //   thirdChild.textContent = item.age;
-    // }
-    newNode = data && data.map((item: ResultData) => {
-      const { id, row, gender, age } = item;
-      return `
-    <tr data-entryid="${id}">
-    <td>${row}</td>
-    <td>${age}</td>
-    <td>${gender}</td>
-    </tr>
-    `
-    });
-    if (pageView && tableBody) {
-      pageView.textContent = `Showing Page ${currentPage}`;
-      tableBody.innerHTML = newNode.join("").toString()
+    if (currentPage === 1) {
+      previousBtn.disabled = true;
+    } else {
+      previousBtn.disabled = false;
     }
   }
 };
 
-const startApp = async () => {
-  await loadData();
-  previousBtn.addEventListener("click", async () => {
-    if (currentPage === 1) {
-      return currentPage;
-    } else {
-      currentPage--;
+async function getData(type: "NEXT" | "PREVIOUS") {
+  const url = 
+    dataStore?.results[0]?.paging?.next ?? `${baseUrl}&page=${currentPage}`;
+  if (type === "PREVIOUS") {
+    if (Number(dataStore?.info.page) === 1) {
+      tableData = dataStore?.results[0][`${currentPage}`];
+      renderTableData();
     }
-    await loadData(currentPage);
-  });
-  nextBtn.addEventListener("click", async () => {
-    currentPage++;
-    await loadData(currentPage);
-  });
-};
+    else {
+      loadData(dataStore?.results[0]?.paging?.previous).then((data) => {
+        dataStore = data;
+        tableData = data?.results[0][`${currentPage}`];
+        renderTableData();
+      });
+    };
+  }
 
-document.addEventListener("DOMContentLoaded", startApp);
+  if (type === "NEXT") {
+    if (Number(dataStore?.info.page) + 1 === currentPage) {
+      tableData = dataStore?.results[0][`${currentPage}`];
+      renderTableData();
+    }
+    else {
+      loadData(url).then((data) => {
+        dataStore = data;
+        tableData = data?.results[0][`${currentPage}`];
+        renderTableData();
+      });
+    }
+  }
+}
+
+previousBtn.addEventListener("click", async () => {
+  currentPage--;
+  getData("PREVIOUS");
+});
+nextBtn.addEventListener("click", async () => {
+  currentPage++;
+  getData("NEXT");
+});
+
+getData("NEXT");
+const startApp = async() => {};
+document.addEventListener(
+  "DOMContentLoaded", startApp
+);
